@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Connexion - Ministère de la Justice</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="login">
+<header class="top"><img src="logo.png" alt="" onerror="this.style.display='none'">
+  <h1>Ministère de la Justice<br><small style="font-weight:400">Gestion des Déplacements Officiels</small></h1></header>
+<div class="login-box">
+  <div class="carte">
+    <h2>Se connecter</h2>
+    <p class="indice">Saisissez votre matricule et votre mot de passe.</p>
+    <form id="loginForm" class="grille" style="grid-template-columns:1fr">
+      <label class="champ">Matricule<input id="matricule" autocomplete="username" autofocus required placeholder="ex. AGT001"></label>
+      <label class="champ">Mot de passe<input id="password" type="password" autocomplete="current-password" required></label>
+      <button type="submit" id="btnLogin">Connexion</button>
+      <p class="msg-err" id="erreur"></p>
+    </form>
+  </div></div>
+<script src="js/login.js"></script>
+</body>
+</html>

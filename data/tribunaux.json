@@ -1,0 +1,252 @@
+[
+ {
+  "nom": "TPI Casablanca",
+  "type": "Tribunal de première instance",
+  "ville": "Casablanca"
+ },
+ {
+  "nom": "TPI Rabat",
+  "type": "Tribunal de première instance",
+  "ville": "Rabat"
+ },
+ {
+  "nom": "TPI Marrakech",
+  "type": "Tribunal de première instance",
+  "ville": "Marrakech"
+ },
+ {
+  "nom": "TPI Fès",
+  "type": "Tribunal de première instance",
+  "ville": "Fès"
+ },
+ {
+  "nom": "TPI Tanger",
+  "type": "Tribunal de première instance",
+  "ville": "Tanger"
+ },
+ {
+  "nom": "TPI Agadir",
+  "type": "Tribunal de première instance",
+  "ville": "Agadir"
+ },
+ {
+  "nom": "TPI Meknès",
+  "type": "Tribunal de première instance",
+  "ville": "Meknès"
+ },
+ {
+  "nom": "TPI Oujda",
+  "type": "Tribunal de première instance",
+  "ville": "Oujda"
+ },
+ {
+  "nom": "TPI Kénitra",
+  "type": "Tribunal de première instance",
+  "ville": "Kénitra"
+ },
+ {
+  "nom": "TPI Tétouan",
+  "type": "Tribunal de première instance",
+  "ville": "Tétouan"
+ },
+ {
+  "nom": "TPI El Jadida",
+  "type": "Tribunal de première instance",
+  "ville": "El Jadida"
+ },
+ {
+  "nom": "TPI Nador",
+  "type": "Tribunal de première instance",
+  "ville": "Nador"
+ },
+ {
+  "nom": "TPI Safi",
+  "type": "Tribunal de première instance",
+  "ville": "Safi"
+ },
+ {
+  "nom": "TPI Khouribga",
+  "type": "Tribunal de première instance",
+  "ville": "Khouribga"
+ },
+ {
+  "nom": "TPI Settat",
+  "type": "Tribunal de première instance",
+  "ville": "Settat"
+ },
+ {
+  "nom": "TPI Guelmim",
+  "type": "Tribunal de première instance",
+  "ville": "Guelmim"
+ },
+ {
+  "nom": "TPI Errachidia",
+  "type": "Tribunal de première instance",
+  "ville": "Errachidia"
+ },
+ {
+  "nom": "TPI Taza",
+  "type": "Tribunal de première instance",
+  "ville": "Taza"
+ },
+ {
+  "nom": "TPI Laâyoune",
+  "type": "Tribunal de première instance",
+  "ville": "Laâyoune"
+ },
+ {
+  "nom": "TPI Dakhla",
+  "type": "Tribunal de première instance",
+  "ville": "Dakhla"
+ },
+ {
+  "nom": "TPI Salé",
+  "type": "Tribunal de première instance",
+  "ville": "Salé"
+ },
+ {
+  "nom": "Cour d’appel Casablanca",
+  "type": "Cour d’appel",
+  "ville": "Casablanca"
+ },
+ {
+  "nom": "Cour d’appel Rabat",
+  "type": "Cour d’appel",
+  "ville": "Rabat"
+ },
+ {
+  "nom": "Cour d’appel Marrakech",
+  "type": "Cour d’appel",
+  "ville": "Marrakech"
+ },
+ {
+  "nom": "Cour d’appel Fès",
+  "type": "Cour d’appel",
+  "ville": "Fès"
+ },
+ {
+  "nom": "Cour d’appel Agadir",
+  "type": "Cour d’appel",
+  "ville": "Agadir"
+ },
+ {
+  "nom": "Cour d’appel Oujda",
+  "type": "Cour d’appel",
+  "ville": "Oujda"
+ },
+ {
+  "nom": "Cour d’appel Laâyoune",
+  "type": "Cour d’appel",
+  "ville": "Laâyoune"
+ },
+ {
+  "nom": "Cour d’appel Meknès",
+  "type": "Cour d’appel",
+  "ville": "Meknès"
+ },
+ {
+  "nom": "Cour d’appel Tétouan",
+  "type": "Cour d’appel",
+  "ville": "Tétouan"
+ },
+ {
+  "nom": "Tribunal de commerce Casablanca",
+  "type": "Tribunal de commerce",
+  "ville": "Casablanca"
+ },
+ {
+  "nom": "Tribunal de commerce Rabat",
+  "type": "Tribunal de commerce",
+  "ville": "Rabat"
+ },
+ {
+  "nom": "Tribunal de commerce Fès",
+  "type": "Tribunal de commerce",
+  "ville": "Fès"
+ },
+ {
+  "nom": "Tribunal de commerce Marrakech",
+  "type": "Tribunal de commerce",
+  "ville": "Marrakech"
+ },
+ {
+  "nom": "Tribunal de commerce Agadir",
+  "type": "Tribunal de commerce",
+  "ville": "Agadir"
+ },
+ {
+  "nom": "Tribunal de commerce Oujda",
+  "type": "Tribunal de commerce",
+  "ville": "Oujda"
+ },
+ {
+  "nom": "Cour d’appel commerciale Casablanca",
+  "type": "Cour d’appel commerciale",
+  "ville": "Casablanca"
+ },
+ {
+  "nom": "Cour d’appel commerciale Fès",
+  "type": "Cour d’appel commerciale",
+  "ville": "Fès"
+ },
+ {
+  "nom": "Cour d’appel commerciale Marrakech",
+  "type": "Cour d’appel commerciale",
+  "ville": "Marrakech"
+ },
+ {
+  "nom": "Tribunal administratif Casablanca",
+  "type": "Tribunal administratif",
+  "ville": "Casablanca"
+ },
+ {
+  "nom": "Tribunal administratif Rabat",
+  "type": "Tribunal administratif",
+  "ville": "Rabat"
+ },
+ {
+  "nom": "Tribunal administratif Marrakech",
+  "type": "Tribunal administratif",
+  "ville": "Marrakech"
+ },
+ {
+  "nom": "Tribunal administratif Fès",
+  "type": "Tribunal administratif",
+  "ville": "Fès"
+ },
+ {
+  "nom": "Tribunal administratif Oujda",
+  "type": "Tribunal administratif",
+  "ville": "Oujda"
+ },
+ {
+  "nom": "Tribunal administratif Agadir",
+  "type": "Tribunal administratif",
+  "ville": "Agadir"
+ },
+ {
+  "nom": "Tribunal administratif Meknès",
+  "type": "Tribunal administratif",
+  "ville": "Meknès"
+ },
+ {
+  "nom": "Cour administrative d’appel Rabat",
+  "type": "Cour administrative d’appel",
+  "ville": "Rabat"
+ },
+ {
+  "nom": "Cour administrative d’appel Marrakech",
+  "type": "Cour administrative d’appel",
+  "ville": "Marrakech"
+ },
+ {
+  "nom": "Cour administrative d’appel Fès",
+  "type": "Cour administrative d’appel",
+  "ville": "Fès"
+ },
+ {
+  "nom": "Tribunal militaire Rabat",
+  "type": "Tribunal militaire",
+  "ville": "Rabat"
+ }
+]

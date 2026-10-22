@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Déplacement - Ministère de la Justice</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+<main>
+  <h2 class="titre" id="titreForm">Formulaire de mission</h2>
+  <div class="carte"><h3>Informations de l'agent</h3><div class="infos" id="infosAgent"></div>
+    <p class="indice" style="margin:12px 0 0">Ces informations proviennent de la base des employés et ne sont pas modifiables ici.</p></div>
+  <form id="form">
+    <div class="carte"><h3>Mission</h3>
+      <div class="grille">
+        <label class="champ">Destination (tribunal)<select id="tribunal_id" required><option value="">-- Choisir --</option></select></label>
+        <label class="champ">Type de mission<select id="mission" required><option value="">-- Choisir --</option></select></label>
+        <label class="champ large">Tâche à accomplir<textarea id="tache" rows="2" maxlength="500" required placeholder="Décrivez la tâche"></textarea></label>
+      </div></div>
+    <div class="carte"><h3>Dates et heures de travail</h3>
+      <div class="grille">
+        <label class="champ">Date de départ<input type="date" id="date_depart" required></label>
+        <label class="champ">Heure de début<input type="time" id="heure_debut" required></label>
+        <label class="champ">Date d'arrivée / fin<input type="date" id="date_arrivee" required></label>
+        <label class="champ">Heure de fin<input type="time" id="heure_fin" required></label>
+        <label class="champ">Durée du travail<input id="duree" readonly placeholder="calculée automatiquement"></label>
+      </div></div>
+    <div class="carte"><h3>Véhicule</h3>
+      <div class="grille">
+        <label class="champ">Type de véhicule<select id="type_vehicule" required><option value="">-- Choisir --</option></select></label>
+        <label class="champ" id="blocParc" hidden>Véhicule du parc (disponibles sur la période)<select id="vehicule_id"></select></label>
+        <label class="champ" id="blocMarque" hidden>Marque<input id="marque_vehicule" maxlength="60"></label>
+        <label class="champ" id="blocMat" hidden>Matricule du véhicule<input id="matricule_vehicule" maxlength="30"></label>
+      </div>
+      <p class="indice" id="indiceVeh"></p></div>
+    <p class="msg-err" id="erreur"></p>
+    <button type="submit" id="btnEnvoyer">Enregistrer le déplacement</button>
+    <a class="btn clair" href="deplacements.html" style="margin-left:8px">Annuler</a>
+  </form>
+</main>
+<script src="js/common.js"></script><script src="js/formulaire.js"></script>
+</body>
+</html>

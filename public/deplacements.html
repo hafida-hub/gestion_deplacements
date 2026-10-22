@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Déplacements - Ministère de la Justice</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+<main>
+  <h2 class="titre" id="titreListe">Déplacements</h2>
+  <div id="banniere" class="banniere" hidden></div>
+  <div class="carte">
+    <div class="barre-outils">
+      <input type="search" id="q" placeholder="Rechercher (n°, nom, matricule, tribunal, tâche…)">
+      <select id="fStatut"><option value="">Tous les statuts</option></select>
+      <select id="fMission"><option value="">Tous les types de mission</option></select>
+      <select id="fService" hidden><option value="">Tous les services</option></select>
+      <button class="clair" id="btnReset">Réinitialiser</button>
+      <button class="clair" id="btnCsv">Exporter CSV</button>
+    </div>
+    <p class="compteur" id="compteur"></p>
+    <div class="tableau-wrap"><table style="min-width:1050px"><thead><tr>
+      <th>N°</th><th>Agent</th><th>Destination</th><th>Début</th><th>Fin</th><th>Durée</th><th>Véhicule</th><th>Mission / tâche</th><th>Statut</th><th>Actions</th>
+    </tr></thead><tbody id="corps"></tbody></table></div>
+    <p class="vide" id="vide" hidden>Aucun déplacement à afficher.</p>
+  </div>
+</main>
+<script src="js/common.js"></script><script src="js/recu.js"></script><script src="js/jspdf.umd.min.js"></script><script src="js/deplacements.js"></script>
+</body>
+</html>

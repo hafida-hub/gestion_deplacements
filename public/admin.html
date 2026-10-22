@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Administration - Ministère de la Justice</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+<main>
+  <h2 class="titre">Administration</h2>
+  <div class="onglets"><button id="tabEmp" class="actif">Employés</button><button id="tabJournal">Journal d'activité</button></div>
+
+  <div id="vueEmp">
+    <div class="carte">
+      <div class="barre-outils"><input type="search" id="qEmp" placeholder="Rechercher un employé (nom, matricule, grade, service…)">
+        <button id="btnNouvelEmp">+ Nouvel employé</button><button class="clair" id="btnCsvEmp">Exporter CSV</button></div>
+      <div class="tableau-wrap"><table style="min-width:900px"><thead><tr><th>Matricule</th><th>Nom</th><th>Grade / fonction</th><th>Service</th><th>Rôle</th><th>Actif</th><th>Actions</th></tr></thead>
+      <tbody id="corpsEmp"></tbody></table></div></div>
+  </div>
+
+  <div id="vueJournal" hidden><div class="carte"><h3>200 dernières actions</h3>
+    <div class="tableau-wrap"><table><thead><tr><th>Date</th><th>Employé</th><th>Action</th><th>Détails</th></tr></thead><tbody id="corpsJournal"></tbody></table></div></div></div>
+
+  <dialog id="dlgEmp"><form id="formEmp" method="dialog">
+    <h3 id="titreEmp">Employé</h3>
+    <div class="grille">
+      <label class="champ">Matricule<input id="e_matricule" maxlength="12" required></label>
+      <label class="champ">Rôle<select id="e_role"><option value="agent">Agent</option><option value="responsable">Responsable de service</option><option value="admin">Administrateur</option></select></label>
+      <label class="champ">Nom<input id="e_nom" required></label>
+      <label class="champ">Prénom<input id="e_prenom" required></label>
+      <label class="champ">Grade<input id="e_grade" required></label>
+      <label class="champ">Fonction<input id="e_fonction" required></label>
+      <label class="champ">Service<select id="e_service_id" required></select></label>
+      <label class="champ">Téléphone<input id="e_telephone" required></label>
+      <label class="champ">E-mail<input id="e_email" type="email"></label>
+      <label class="champ">CIN<input id="e_cin"></label>
+      <label class="champ">Date d'embauche<input id="e_date_embauche" type="date"></label>
+      <label class="champ" id="blocPwd">Mot de passe initial (8 car. min.)<input id="e_password" type="password" autocomplete="new-password"></label>
+      <label class="champ" id="blocActif"><span>Compte actif</span><select id="e_actif"><option value="1">Oui</option><option value="0">Non (désactivé)</option></select></label>
+    </div>
+    <p class="msg-err" id="erreurEmp"></p>
+    <div style="display:flex;gap:8px;margin-top:10px"><button type="submit" id="btnSaveEmp">Enregistrer</button><button type="button" class="clair" id="btnFermerEmp">Fermer</button></div>
+  </form></dialog>
+
+  <dialog id="dlgFiche"><div id="ficheContenu"></div><div style="margin-top:12px"><button class="clair" id="btnFermerFiche">Fermer</button></div></dialog>
+</main>
+<script src="js/common.js"></script><script src="js/recu.js"></script><script src="js/jspdf.umd.min.js"></script><script src="js/admin.js"></script>
+</body>
+</html>
