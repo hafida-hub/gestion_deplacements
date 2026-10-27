@@ -130,10 +130,26 @@ CREATE TABLE IF NOT EXISTS deplacements (
   traite_par         TEXT REFERENCES employes(matricule),
   traite_le          TEXT,
   cree_le            TEXT NOT NULL DEFAULT (datetime('now','localtime')),
-  modifie_le         TEXT
+  modifie_le         TEXT,
+  rappel_envoye      INTEGER NOT NULL DEFAULT 0,
+  relance_niveau     INTEGER NOT NULL DEFAULT 0
 );
 CREATE INDEX IF NOT EXISTS idx_dep_mat ON deplacements(matricule);
 CREATE INDEX IF NOT EXISTS idx_dep_periode ON deplacements(debut_dt, fin_dt);
+
+CREATE TABLE IF NOT EXISTS emails (
+  id             INTEGER PRIMARY KEY AUTOINCREMENT,
+  date           TEXT NOT NULL DEFAULT (datetime('now','localtime')),
+  destinataire   TEXT NOT NULL,
+  sujet          TEXT NOT NULL,
+  corps          TEXT,
+  piece_jointe   TEXT,
+  statut         TEXT NOT NULL,
+  mode           TEXT,
+  erreur         TEXT,
+  apercu         TEXT,
+  deplacement_id INTEGER
+);
 
 CREATE TABLE IF NOT EXISTS journal (
   id        INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -143,6 +159,10 @@ CREATE TABLE IF NOT EXISTS journal (
   details   TEXT
 );
 `);
+  // Migration : ajoute les colonnes des tâches automatiques aux bases créées avant cette version
+  const cols = db.prepare("PRAGMA table_info(deplacements)").all().map((c) => c.name);
+  if (!cols.includes("rappel_envoye")) db.exec("ALTER TABLE deplacements ADD COLUMN rappel_envoye INTEGER NOT NULL DEFAULT 0");
+  if (!cols.includes("relance_niveau")) db.exec("ALTER TABLE deplacements ADD COLUMN relance_niveau INTEGER NOT NULL DEFAULT 0");
 }
 
 
@@ -229,4 +249,14 @@ function journaliser(matricule, action, details) {
   db.prepare("INSERT INTO journal (matricule, action, details) VALUES (?,?,?)").run(matricule || null, action, details || null);
 }
 
-module.exports = { db, ready, seed, initialiser, journaliser, DEMO_PASSWORD, DB_PATH };
+const SELECT_DEP = `
+  SELECT d.*, e.nom, e.prenom, e.grade, e.fonction, e.telephone, e.email, e.service_id,
+         s.nom AS service, t.nom AS tribunal, t.ville AS ville_tribunal,
+         tp.nom AS traite_par_nom, tp.prenom AS traite_par_prenom
+  FROM deplacements d
+  JOIN employes e ON e.matricule = d.matricule
+  JOIN services s ON s.id = e.service_id
+  JOIN tribunaux t ON t.id = d.tribunal_id
+  LEFT JOIN employes tp ON tp.matricule = d.traite_par`;
+
+module.exports = { SELECT_DEP, db, ready, seed, initialiser, journaliser, DEMO_PASSWORD, DB_PATH };

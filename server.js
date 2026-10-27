@@ -1,9 +1,12 @@
+require("dotenv").config({ quiet: true });
 const express = require("express");
 const session = require("express-session");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const path = require("path");
-const { db, ready, initialiser, journaliser } = require("./db");
+const { db, ready, initialiser, journaliser, SELECT_DEP } = require("./db");
+const mail = require("./mail");
+const taches = require("./taches");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -66,15 +69,7 @@ const dt = (d, h) => `${d}T${h}`;
 const valideDate = (d) => /^\d{4}-\d{2}-\d{2}$/.test(d) && !isNaN(new Date(d));
 const valideHeure = (h) => /^([01]\d|2[0-3]):[0-5]\d$/.test(h);
 
-const SELECT_DEP = `
-  SELECT d.*, e.nom, e.prenom, e.grade, e.fonction, e.telephone, e.email, e.service_id,
-         s.nom AS service, t.nom AS tribunal, t.ville AS ville_tribunal,
-         tp.nom AS traite_par_nom, tp.prenom AS traite_par_prenom
-  FROM deplacements d
-  JOIN employes e ON e.matricule = d.matricule
-  JOIN services s ON s.id = e.service_id
-  JOIN tribunaux t ON t.id = d.tribunal_id
-  LEFT JOIN employes tp ON tp.matricule = d.traite_par`;
+// SELECT_DEP (jointure déplacement + employé + service + tribunal) est défini dans db.js
 
 function peutVoir(u, d) {
   if (u.role === "admin") return true;
@@ -353,6 +348,11 @@ app.post("/api/deplacements/:id/statut", auth(), wrap((req, res) => {
     .run(cible, cible === "Refusée" ? motif : ex.motif_refus, req.user.matricule, ex.id);
   journaliser(req.user.matricule, `Statut → ${cible}`, ex.numero + (motif ? ` (${motif})` : ""));
   res.json({ ok: true });
+  // E-mail à l'agent (validation ou refus) avec le reçu PDF : envoyé en arrière-plan
+  if (cible === "Validée" || cible === "Refusée") {
+    const maj = db.prepare(`${SELECT_DEP} WHERE d.id = ?`).get(ex.id);
+    mail.notifierDecision(maj, req.user).catch((e) => console.error("Notification :", e.message));
+  }
 }));
 
 /* ------------------------------------------------------------------ */
@@ -455,6 +455,32 @@ app.post("/api/employes/:matricule/mot-de-passe", auth("admin"), wrap((req, res)
   res.json({ ok: true });
 }));
 
+/* Tâches automatiques (rappels, relances) : état et exécution manuelle (admin) */
+app.get("/api/taches", auth("admin"), wrap((req, res) => res.json(taches.etat())));
+app.post("/api/taches/executer", auth("admin"), wrap(async (req, res) => {
+  journaliser(req.user.matricule, "Exécution manuelle des tâches automatiques");
+  res.json(await taches.executerTaches());
+}));
+
+/* E-mails : configuration, historique, test d'envoi (admin) */
+app.get("/api/emails", auth("admin"), wrap((req, res) => {
+  res.json({
+    config: mail.configPublique(),
+    emails: db.prepare("SELECT * FROM emails ORDER BY id DESC LIMIT 100").all(),
+  });
+}));
+
+app.post("/api/emails/test", auth("admin"), wrap((req, res) => {
+  const to = txt(req.body.to, 120);
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) return bad(res, "Adresse e-mail invalide.");
+  mail.envoyerEmail({
+    to, sujet: "Test - Gestion des déplacements",
+    texte: "Ceci est un e-mail de test envoyé depuis l'application Gestion des Déplacements Officiels. Si vous le lisez, la configuration fonctionne.",
+  }).catch(() => {});
+  journaliser(req.user.matricule, "E-mail de test", to);
+  res.json({ ok: true });
+}));
+
 app.get("/api/journal", auth("admin"), wrap((req, res) => {
   res.json(db.prepare(`SELECT j.*, e.nom, e.prenom FROM journal j LEFT JOIN employes e ON e.matricule = j.matricule
                        ORDER BY j.id DESC LIMIT 200`).all());
@@ -464,5 +490,8 @@ app.use("/api", (req, res) => bad(res, "Route inconnue.", 404));
 
 ready.then(() => {
   initialiser();
-  app.listen(PORT, () => console.log(`Application disponible sur http://localhost:${PORT}`));
+  app.listen(PORT, () => {
+    console.log(`Application disponible sur http://localhost:${PORT}`);
+    taches.demarrerPlanificateur();
+  });
 }).catch((e) => { console.error("Impossible d'ouvrir la base de données :", e); process.exit(1); });

@@ -13,7 +13,7 @@ async function telechargerRecu(id) {
   doc.text("Gestion des Déplacements Officiels", W / 2, 22, { align: "center" });
 
   doc.setTextColor(0, 51, 102); doc.setFont("helvetica", "bold"); doc.setFontSize(15);
-  doc.text("REÇU DE DÉPLACEMENT OFFICIEL", W / 2, 46, { align: "center" });
+  doc.text("ORDRE DE MISSION", W / 2, 46, { align: "center" });
   doc.setFontSize(11); doc.setTextColor(60, 60, 60);
   doc.text(`N° ${d.numero}`, W / 2, 53, { align: "center" });
 

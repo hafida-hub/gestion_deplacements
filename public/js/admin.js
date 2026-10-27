@@ -6,12 +6,14 @@
   $("#e_service_id").innerHTML = ref.services.map((s) => `<option value="${s.id}">${esc(s.nom)}</option>`).join("");
 
   /* Onglets */
-  const onglet = (emp) => {
-    $("#vueEmp").hidden = !emp; $("#vueJournal").hidden = emp;
-    $("#tabEmp").classList.toggle("actif", emp); $("#tabJournal").classList.toggle("actif", !emp);
-    if (!emp) chargerJournal();
+  const vues = { emp: "#vueEmp", journal: "#vueJournal", mails: "#vueMails" };
+  const tabs = { emp: "#tabEmp", journal: "#tabJournal", mails: "#tabMails" };
+  const onglet = (nom) => {
+    Object.keys(vues).forEach((k) => { $(vues[k]).hidden = k !== nom; $(tabs[k]).classList.toggle("actif", k === nom); });
+    if (nom === "journal") chargerJournal();
+    if (nom === "mails") chargerMails();
   };
-  $("#tabEmp").onclick = () => onglet(true); $("#tabJournal").onclick = () => onglet(false);
+  $("#tabEmp").onclick = () => onglet("emp"); $("#tabJournal").onclick = () => onglet("journal"); $("#tabMails").onclick = () => onglet("mails");
 
   /* Liste des employés */
   async function charger() { employes = await api("/api/employes"); afficher(); }
@@ -87,5 +89,58 @@
     $("#corpsJournal").innerHTML = j.map((r) => `<tr><td>${esc(r.date)}</td><td>${esc(r.matricule || "-")}${r.nom ? `<br><small>${esc(r.prenom)} ${esc(r.nom)}</small>` : ""}</td>
       <td>${esc(r.action)}</td><td>${esc(r.details || "")}</td></tr>`).join("");
   }
+
+  /* E-mails */
+  let mails = [];
+  const LIBELLE_MODE = { smtp: (c) => `Mode : envoi réel via ${esc(c.host)}`, ethereal: () => "Mode : Ethereal (boîte de test, rien n'est livré : ouvrez le lien « Aperçu »)",
+    simulation: () => "Mode : simulation (aucun envoi réel, les e-mails sont seulement enregistrés). Configurez le fichier .env pour envoyer de vrais e-mails." };
+  const classeStatut = { "envoyé": "s-validee", "simulé": "s-attente", "échec": "s-refusee", "ignoré": "s-annulee", "en cours": "s-attente" };
+  async function chargerTaches() {
+    const t = await api("/api/taches");
+    const c = t.reglages;
+    $("#tachesInfo").innerHTML = t.actif
+      ? `Vérification toutes les ${c.intervalleMin} min · Rappel à l'agent ${c.rappelHeuresAvant} h avant la mission · Relance du responsable après ${c.relanceHeures} h sans réponse · Escalade à l'administrateur après ${c.escaladeHeures} h.`
+        + (t.dernier ? `<br>Dernière exécution : ${esc(new Date(t.dernier.date).toLocaleString("fr-FR"))} → ${t.dernier.rappels} rappel(s), ${t.dernier.relances} relance(s), ${t.dernier.escalades} escalade(s), ${t.dernier.erreurs} erreur(s).` : "<br>Aucune exécution depuis le démarrage du serveur.")
+      : "Tâches automatiques désactivées (TACHES_AUTO=false).";
+  }
+  $("#btnTaches").onclick = async () => {
+    const msg = $("#tachesMsg"); msg.className = "msg-ok"; msg.textContent = "Exécution…";
+    try {
+      const r = await api("/api/taches/executer", { method: "POST" });
+      msg.textContent = r.ignore ? r.message : `Terminé : ${r.rappels} rappel(s), ${r.relances} relance(s), ${r.escalades} escalade(s), ${r.erreurs} erreur(s).`;
+      await chargerTaches(); await chargerMails();
+    } catch (x) { msg.className = "msg-err"; msg.textContent = x.message; }
+  };
+
+  async function chargerMails() {
+    chargerTaches().catch(() => {});
+    const r = await api("/api/emails");
+    mails = r.emails;
+    $("#mailMode").innerHTML = LIBELLE_MODE[r.config.mode](r.config) + ` · Expéditeur : ${esc(r.config.from)}`;
+    $("#corpsMails").innerHTML = mails.map((m) => `<tr><td>${esc(m.date)}</td><td>${esc(m.destinataire)}</td><td>${esc(m.sujet)}</td>
+      <td>${esc(m.piece_jointe || "-")}</td>
+      <td><span class="badge ${classeStatut[m.statut] || ""}">${esc(m.statut)}</span>${m.erreur ? `<br><small>${esc(m.erreur)}</small>` : ""}
+        ${m.apercu && /^https:\/\//.test(m.apercu) ? `<br><a href="${esc(m.apercu)}" target="_blank" rel="noopener">Aperçu</a>` : ""}</td>
+      <td><button class="petit clair" data-mail="${m.id}">Voir</button></td></tr>`).join("")
+      || '<tr><td colspan="6" class="vide">Aucun e-mail pour le moment. Validez ou refusez une demande pour en générer.</td></tr>';
+  }
+  $("#corpsMails").addEventListener("click", (ev) => {
+    const b = ev.target.closest("button[data-mail]"); if (!b) return;
+    const m = mails.find((x) => String(x.id) === b.dataset.mail);
+    $("#mailContenu").innerHTML = `<h3>${esc(m.sujet)}</h3><p class="indice">À : ${esc(m.destinataire)} · ${esc(m.date)}${m.piece_jointe ? " · Pièce jointe : " + esc(m.piece_jointe) : ""}</p>
+      <pre style="white-space:pre-wrap;font-family:inherit;background:#f4f7fb;padding:12px;border-radius:8px">${esc(m.corps || "")}</pre>`;
+    $("#dlgMail").showModal();
+  });
+  $("#btnFermerMail").onclick = () => $("#dlgMail").close();
+  $("#btnMailRefresh").onclick = chargerMails;
+  $("#btnMailTest").onclick = async () => {
+    const msg = $("#mailMsg"); msg.className = "msg-ok"; msg.textContent = "";
+    try {
+      await api("/api/emails/test", { method: "POST", body: { to: $("#mailTo").value } });
+      msg.textContent = "E-mail de test lancé. Actualisation dans 2 secondes…";
+      setTimeout(chargerMails, 2000);
+    } catch (x) { msg.className = "msg-err"; msg.textContent = x.message; }
+  };
+
   await charger();
 })();
